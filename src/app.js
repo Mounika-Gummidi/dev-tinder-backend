@@ -1,38 +1,39 @@
 const express = require("express");
 const app=express();
 
-
-// ----how to access the incoming requests
-
- app.use("/test", (req,res)=>{
-  res.send("we are inside use function(test)");
- });
-
- app.use("/home", (req,res)=>{
-  res.send("we are inside use function(home)");
- });
-
- 
-
-
-//  app.use((req,res)=>{
-//   res.send("we are inside use function main");
-//  });
-
-  app.get("/user",(req,res)=>{
-    res.send("hehehehe get");
-  });
-  app.post("/user",(req,res)=>{
-    res.send("hehehehe posting");
-  });
-  app.delete("/user",(req,res)=>{
-    res.send("deleted");
-  });
+app.get("/ab?c",(req,res)=>{
+  res.send({firstname:"mounika",lastname:"gummidi"});
+});
+app.get("/ab+c",(req,res)=>{
+  res.send({firstname:"mounika",lastname:"gummidi"});
+});
+app.get("/ab*cd",(req,res)=>{
+  res.send({firstname:"mounika",lastname:"gummidi"});
+});
+app.get("/a(bd)?ce",(req,res)=>{
+  res.send({firstname:"mounika",lastname:"gummidi"});
+});
 
 
-  app.use("/", (req,res)=>{
-    res.send("we are inside use function(/)");
-   });
+//regular expressions
+app.get(/a/,(req,res)=>{
+  res.send({firstname:"kavya",lastname:"gummidi"});
+});
+app.get(/.*fly$/,(req,res)=>{
+  res.send({firstname:"kavya",lastname:"gummidi"});
+});
+
+
+//we commonly see urls
+app.get("/user/:userid/:name/:password",(req,res)=>{
+  res.send({firstname:"sarada",lastname:"gummidi"});
+});
+app.get("/user",(req,res)=>{
+  console.log(req.query);
+  res.send({firstname:"sarada",lastname:"gummidi"});
+});
+
+
 // ---listening
 // app.listen(3000);
 
