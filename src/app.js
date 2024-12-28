@@ -4,11 +4,6 @@ const app=express();
 
 // ----how to access the incoming requests
 
-
-// app.use("/", (req,res)=>{
-//   res.send("we are inside use function(/)");
-//  });
-
  app.use("/test", (req,res)=>{
   res.send("we are inside use function(test)");
  });
@@ -17,11 +12,27 @@ const app=express();
   res.send("we are inside use function(home)");
  });
 
+ 
 
- app.use((req,res)=>{
-  res.send("we are inside use function main");
- });
 
+//  app.use((req,res)=>{
+//   res.send("we are inside use function main");
+//  });
+
+  app.get("/user",(req,res)=>{
+    res.send("hehehehe get");
+  });
+  app.post("/user",(req,res)=>{
+    res.send("hehehehe posting");
+  });
+  app.delete("/user",(req,res)=>{
+    res.send("deleted");
+  });
+
+
+  app.use("/", (req,res)=>{
+    res.send("we are inside use function(/)");
+   });
 // ---listening
 // app.listen(3000);
 
