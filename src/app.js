@@ -1,38 +1,28 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 const app=express();
 
-app.get("/ab?c",(req,res)=>{
-  res.send({firstname:"mounika",lastname:"gummidi"});
+
+//auth middleware
+app.use("/admin",adminAuth);
+
+app.get("/admin/getAllData",(req,res)=>{
+  res.send("getting all the data");
 });
-app.get("/ab+c",(req,res)=>{
-  res.send({firstname:"mounika",lastname:"gummidi"});
-});
-app.get("/ab*cd",(req,res)=>{
-  res.send({firstname:"mounika",lastname:"gummidi"});
-});
-app.get("/a(bd)?ce",(req,res)=>{
-  res.send({firstname:"mounika",lastname:"gummidi"});
+
+app.get("/admin/deleteData",(req,res)=>{
+  res.send("deleting the data");
 });
 
 
-//regular expressions
-app.get(/a/,(req,res)=>{
-  res.send({firstname:"kavya",lastname:"gummidi"});
-});
-app.get(/.*fly$/,(req,res)=>{
-  res.send({firstname:"kavya",lastname:"gummidi"});
+ //user middleware
+app.get("/user",userAuth,(req,res)=>{
+  res.send("hello user");
 });
 
-
-//we commonly see urls
-app.get("/user/:userid/:name/:password",(req,res)=>{
-  res.send({firstname:"sarada",lastname:"gummidi"});
+app.post("/user/login",(req,res)=>{
+  res.send("user logged in successfully");
 });
-app.get("/user",(req,res)=>{
-  console.log(req.query);
-  res.send({firstname:"sarada",lastname:"gummidi"});
-});
-
 
 // ---listening
 // app.listen(3000);
