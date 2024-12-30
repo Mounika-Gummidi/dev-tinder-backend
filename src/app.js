@@ -4,6 +4,12 @@ const app=express();
 
 //EXCEPTION HANDLING 
 
+app.use("/",(err,req,res,next)=>{
+  if(err){
+    res.status(402).send("something is fishy1111");
+  }
+});
+
 // 1. without using try catch
 app.get("/user",(req,res)=>{
 
@@ -14,20 +20,9 @@ app.get("/user",(req,res)=>{
 
 app.use("/",(err,req,res,next)=>{
   if(err){
-    res.status(402).send("something is fishy");
+    res.status(402).send("something is fishy2222");
   }
-})
-
-// 2.using try catch(BEST)
-app.get("/mouni",(req,res)=>{
-  try{
-    throw new Error("sdfghj");
-    res.send("hello from mounika");
-  }
-  catch(err){
-    res.status(500).send("something went really wrong😐")
-  }
-})
+});
 
 
 // ---listening
