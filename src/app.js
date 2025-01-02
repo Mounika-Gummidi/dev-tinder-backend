@@ -4,18 +4,11 @@ const {connectDB} = require("./config/database");
 const User = require("./models/user");
 const app=express();
 
+app.use(express.json());
 //posting the data to user collection in database
 app.post("/signup", async (req,res) => {
-
-  //instance for user collection
-  const user = new User({
-    firstName: "virat",
-    lastName: "kohili",
-    email: "virat@gmail.com",
-    password: "virat123@",
-    age: "32",
-    gender: "male",
-  });
+  // //instance for user collection
+  const user = new User(req.body);
   //save
   try{
     await user.save();
