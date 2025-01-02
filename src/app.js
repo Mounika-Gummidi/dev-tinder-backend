@@ -21,6 +21,32 @@ app.post("/signup", async (req,res) => {
  
 });
 
+
+//get the user by email
+app.get("/user",async (req,res)=>{
+   const userEmail = req.body.email;
+   try{
+    const users = await User.find({email: userEmail});
+    res.send(users);
+   }
+   catch(err){
+    res.status(402).send("userEmail is not present/ there is an issue");
+   }
+})
+
+//getting all the users from database
+app.get("/feed",async (req,res)=>{
+  try{
+    const users2 = await User.find({});
+    res.send(users2);
+  }
+  catch(err){
+    res.status(402).send("unfortunately all the user not sent");
+  }
+})
+
+
+
 //after connection established
 connectDB().then(()=>{
   console.log("connection succesfully established");
