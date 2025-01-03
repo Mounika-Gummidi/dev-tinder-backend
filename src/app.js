@@ -21,7 +21,6 @@ app.post("/signup", async (req,res) => {
  
 });
 
-
 //get the user by email
 app.get("/user",async (req,res)=>{
    const userEmail = req.body.email;
@@ -34,7 +33,7 @@ app.get("/user",async (req,res)=>{
    }
 })
 
-//getting all the users from database
+//feed api-getting all the users from database
 app.get("/feed",async (req,res)=>{
   try{
     const users2 = await User.find({});
@@ -45,7 +44,28 @@ app.get("/feed",async (req,res)=>{
   }
 })
 
+// deleting the user
+app.delete("/delete",async (req,res)=>{
+  try{
+    const users3 = await User.findByIdAndDelete({_id: req.body._id});
+    res.send("user deleted succesfully");
+  }
+  catch(err)
+  {
+    res.status(403).send("deleting is not done");
+  }
+})
 
+// update the users
+app.patch("/update",async (req,res)=>{
+  try{
+    const user4 = await User.findByIdAndUpdate({_id:req.body._id},req.body,{requireDocument:"After"});
+    res.send(user4);
+  }
+  catch{
+    res.status(405).send("user is not updated");
+  }
+})
 
 //after connection established
 connectDB().then(()=>{
