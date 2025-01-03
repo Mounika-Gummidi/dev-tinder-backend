@@ -16,7 +16,7 @@ app.post("/signup", async (req,res) => {
     res.send("data added succesfully");
   }
   catch(err){
-    res.status(500).send("something is fishy!")
+    res.status(500).send("something is fishy!" + err.message)
   }
  
 });
@@ -59,11 +59,14 @@ app.delete("/delete",async (req,res)=>{
 // update the users
 app.patch("/update",async (req,res)=>{
   try{
-    const user4 = await User.findByIdAndUpdate({_id:req.body._id},req.body,{requireDocument:"After"});
+    const user4 = await User.findByIdAndUpdate({_id:req.body._id},req.body,
+      {returnDocument:"After",
+        runValidators:true,
+      },);
     res.send(user4);
   }
-  catch{
-    res.status(405).send("user is not updated");
+  catch(err){
+    res.status(405).send("update falied!" + err.message);
   }
 })
 
