@@ -57,13 +57,32 @@ app.delete("/delete",async (req,res)=>{
 })
 
 // update the users
-app.patch("/update",async (req,res)=>{
+app.patch("/update/:userId",async (req,res)=>{
+    const userId = req.params?.userId;
+    const data = req.body;
   try{
-    const user4 = await User.findByIdAndUpdate({_id:req.body._id},req.body,
+    
+    // limiting the updates
+    const Allowed_Updates = ["photoUrl","skills","about","age","gender",];
+    const isUpdateAllowed = Object.keys(data).every((k)=>{
+      return Allowed_Updates.includes(k);
+    });
+    if(!isUpdateAllowed)
+      {
+        throw new Error("update is not allowed");
+      }     
+
+    if(req.body.skills.length>10)
+    {
+      throw new Error("maximum length should be 10");
+      
+    }
+
+    const user4 = await User.findByIdAndUpdate({_id:userId},data,
       {returnDocument:"After",
         runValidators:true,
-      },);
-    res.send(user4);
+      });
+    res.send("user updated succesfully");
   }
   catch(err){
     res.status(405).send("update falied!" + err.message);
@@ -75,7 +94,7 @@ connectDB().then(()=>{
   console.log("connection succesfully established");
 
   // ----including callback function
-  app.listen(6666,()=>{
+  app.listen(7777,()=>{
     console.log("we are successfully listening inside on port 6666...");
   });
 
