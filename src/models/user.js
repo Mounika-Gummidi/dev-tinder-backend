@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator= require("validator");
 
 //schema
 const userSchema = new mongoose.Schema({
@@ -21,11 +22,25 @@ const userSchema = new mongoose.Schema({
     unique:true,
     required:true,
     trim:true,
+    validate(value)
+    {
+      if(!validator.isEmail(value))
+      {
+        throw new Error("invalid user email address");
+      }
+    },
   },
   password: {
     type: String,
     required:true,
     trim:true,
+    validate(value)
+    {
+      if(!validator.isStrongPassword(value))
+      {
+        throw new Error("please enter a strong password:" + value);
+      }
+    },
   },
   age: {
     type: Number,
@@ -48,6 +63,12 @@ const userSchema = new mongoose.Schema({
   photoUrl:{
     type: String,
     default: "https://i0.wp.com/www.aalayamdesigns.com/wp-content/uploads/2018/05/dummy-woman.jpg?ssl=1",
+    validate(value){
+      if(!validator.isURL(value))
+      {
+        throw new Error("invalid photo URL");
+      }
+    },
   },
   about:{
     type: String,
