@@ -1,16 +1,37 @@
 const express = require("express");
-const { adminAuth, userAuth } = require("./middlewares/auth");
+const { userAuth } = require("./middlewares/auth");
 const {connectDB} = require("./config/database");
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validations");
 const app=express();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookies = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookies());
 //posting the data to user collection in database
 app.post("/signup", async (req,res) => {
-  // //instance for user collection
-  const user = new User(req.body);
+ 
+  const{password,firstName,lastName,email,gender}=req.body;
+
   //save
   try{
+     // validation for signup data
+  validateSignUpData(req);
+
+  // encrypt the password i the for of hash
+  const passwordHash = await bcrypt.hash(password,10);
+  console.log(passwordHash);
+
+  //instance for user collection(never trust the req.body)
+  const user = new User({
+    firstName,
+    lastName,
+    email,
+    password:passwordHash,
+    gender,
+  });
     await user.save();
       //response
     res.send("data added succesfully");
@@ -21,73 +42,55 @@ app.post("/signup", async (req,res) => {
  
 });
 
-//get the user by email
-app.get("/user",async (req,res)=>{
-   const userEmail = req.body.email;
-   try{
-    const users = await User.find({email: userEmail});
-    res.send(users);
-   }
-   catch(err){
-    res.status(402).send("userEmail is not present/ there is an issue");
-   }
-})
-
-//feed api-getting all the users from database
-app.get("/feed",async (req,res)=>{
+//login
+app.post("/login",async (req,res)=>{
   try{
-    const users2 = await User.find({});
-    res.send(users2);
+    const {email,password} = req.body;
+    //verify email present in db or not
+    // IMPORTANT
+    const user = await User.findOne({email:email});
+    if(!user)
+    {
+      throw new Error("Invalid Credentials");
+    }
+    //compare passwords
+    // IMPORTANT
+    const isPasswordValid = await user.validatePassword(password);
+    if(isPasswordValid)
+    {
+      //creating an token
+      const token= await user.getJWT();
+      res.cookie("token",token,{
+        expires:new Date(Date.now() + 7 * 3600000)
+      });
+      res.send("Login Successfull...");
+    }
+    else
+    {
+      throw new Error("Invalid Credentials");
+    }
   }
   catch(err){
-    res.status(402).send("unfortunately all the user not sent");
+    res.status(403).send("Login Invalid!"+err.message);
   }
-})
 
-// deleting the user
-app.delete("/delete",async (req,res)=>{
+});
+
+app.get("/profile",userAuth,async (req,res)=>{
   try{
-    const users3 = await User.findByIdAndDelete({_id: req.body._id});
-    res.send("user deleted succesfully");
-  }
-  catch(err)
-  {
-    res.status(403).send("deleting is not done");
-  }
-})
-
-// update the users
-app.patch("/update/:userId",async (req,res)=>{
-    const userId = req.params?.userId;
-    const data = req.body;
-  try{
-    
-    // limiting the updates
-    const Allowed_Updates = ["photoUrl","skills","about","age","gender",];
-    const isUpdateAllowed = Object.keys(data).every((k)=>{
-      return Allowed_Updates.includes(k);
-    });
-    if(!isUpdateAllowed)
-      {
-        throw new Error("update is not allowed");
-      }     
-
-    if(req.body.skills.length>10)
-    {
-      throw new Error("maximum length should be 10");
+      const user = req.user;
       
+      res.send(user);
+    }
+    catch(err)
+    {
+      res.status(402).send("problem in profile from catch")
     }
 
-    const user4 = await User.findByIdAndUpdate({_id:userId},data,
-      {returnDocument:"After",
-        runValidators:true,
-      });
-    res.send("user updated succesfully");
-  }
-  catch(err){
-    res.status(405).send("update falied!" + err.message);
-  }
-})
+
+});
+
+
 
 //after connection established
 connectDB().then(()=>{
