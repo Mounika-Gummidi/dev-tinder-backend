@@ -17,8 +17,8 @@ requestRouter
 - POST /request/review/rejected/:requestId
 
 userRouter
-- GET /connections
-- GET /user/requests
+- GET /user/requests/received
+- GET /user/connections
 - GET /user/feed -gets you the profiles of other users on platfrom 
 
 status: ignore,intrested,accepted,rejected
