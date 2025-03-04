@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
   },
   photoUrl:{
     type: String,
-    default: "https://i0.wp.com/www.aalayamdesigns.com/wp-content/uploads/2018/05/dummy-woman.jpg?ssl=1",
+    default: "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg",
     validate(value){
       if(!validator.isURL(value))
       {

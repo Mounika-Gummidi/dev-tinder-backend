@@ -66,18 +66,18 @@ userRouter.get("/feed",userAuth, async (req,res)=>{
     }).select("fromUserId toUserId");
 
     //hiding the users
-    const hideUserFromFeed = new Set();
-    connectionRequests.forEach((req)=>{
-      hideUserFromFeed.add(req.fromUserId.toString()),
-      hideUserFromFeed.add(req.toUserId.toString())
-    });
+    // const hideUserFromFeed = new Set();
+    // connectionRequests.forEach((req)=>{
+    //   hideUserFromFeed.add(req.fromUserId.toString()),
+    //   hideUserFromFeed.add(req.toUserId.toString())
+    // });
     //remaining users
     const users = await User.find({
       $and:[
-        {_id: {$nin: Array.from(hideUserFromFeed)}},
+        // {_id: {$nin: Array.from(hideUserFromFeed)}},
         {_id:{$ne:loggedInUser._id}},
       ],
-    }).select("firstName lastName gender skills about age").skip(skip).limit(limit);
+    }).select().skip(skip).limit(limit);
     // console.log(connectionRequests);
     res.json(users);
   } 

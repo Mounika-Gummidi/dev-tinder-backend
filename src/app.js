@@ -6,7 +6,13 @@ const authRouter = require("./routes/auth1");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
+const cors = require("cors");
 
+app.use(cors({
+  origin:"http://localhost:5173/",
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  credentials:true,
+}));
 app.use(express.json());
 
 app.use(cookies());
@@ -22,7 +28,7 @@ connectDB().then(()=>{
 
   // ----including callback function
   app.listen(7777,()=>{
-    console.log("we are successfully listening inside on port 6666...");
+    console.log("we are successfully listening inside on port 7777...");
   });
 
 }).catch((err)=>{
