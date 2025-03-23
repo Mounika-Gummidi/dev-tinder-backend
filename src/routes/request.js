@@ -29,7 +29,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth, async (req,res)=>
     });
     if(existingConnectionRequest)
     {
-     return res.status(400).send({message:"connectionRequest already exists"});
+     return res.send({message:"connectionRequest already exists"});
     }
 
 

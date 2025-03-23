@@ -8,7 +8,7 @@ const User = require("../models/user");
 //posting the data to user collection in database
 authRouter.post("/signup", async (req,res) => {
  
-  const{password,firstName,lastName,email,gender,age,photoUrl,about}=req.body;
+  const{password,firstName,lastName,email}=req.body;
 
   //save
   try{
@@ -25,14 +25,15 @@ authRouter.post("/signup", async (req,res) => {
     lastName,
     email,
     password:passwordHash,
-    gender,
-    age,
-    photoUrl,
-    about
+   
   });
-    await user.save();
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    res.cookie("token",token,{
+      expires:new Date(Date.now() + 7 * 3600000)
+    });
       //response
-    res.send("data added succesfully");
+    res.json({message:"data added succesfully",data:savedUser});
   }
   catch(err){
     res.status(500).send("something is fishy!" + err.message)

@@ -55,7 +55,7 @@ userRouter.get("/feed",userAuth, async (req,res)=>{
   {
     const loggedInUser = req.user;
     const page=parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10; 
+    const limit = parseInt(req.query.limit) || 20; 
     const skip= (page-1)*limit;
     //finding all the connection requests
     const connectionRequests = await ConnectionRequest.find({
