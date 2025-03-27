@@ -12,7 +12,7 @@ userRouter.get("/user/requests/received",userAuth, async (req,res)=>{
     const connectionRequests = await ConnectionRequest.find({
       toUserId:loggedInUser._id,
       status:"intrested",
-    }).populate("fromUserId",["firstName","lastName","gender","skills","about","age"]);
+    }).populate("fromUserId",["firstName","lastName","gender","skills","about","age","photoUrl"]);
     
     res.json({message:"data fetched successfully",data:connectionRequests,});
   }
@@ -31,8 +31,8 @@ userRouter.get("/user/connections",userAuth, async (req,res)=>{
         {fromUserId:loggedInUser._id,status:"accepted"},
         {toUserId:loggedInUser._id,status:"accepted"},
       ],
-    }).populate("fromUserId",["firstName","lastName","gender","skills","about","age"])
-      .populate("toUserId",["firstName","lastName","gender","skills","about","age"]);
+    }).populate("fromUserId",["firstName","lastName","gender","skills","about","age","photoUrl"])
+      .populate("toUserId",["firstName","lastName","gender","skills","about","age","photoUrl"]);
 
     const data = connectionRequests.map((row)=>{
       if(row.fromUserId._id.toString() === loggedInUser._id.toString())
